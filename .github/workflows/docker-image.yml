@@ -17,8 +17,8 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag cityscapes:latest
     - name: login
-      run: docker login -u your_name -p ${{secrets.DOCKER_HUB_TOKEN}}
+      run: docker login -u gawad1 -p ${{secrets.DOCKER_HUB_TOKEN}}
     - name: Tag the Docker image
-      run: docker tag cityscapes:latest username/repo_name:latest
+      run: docker tag cityscapes:latest gawad1/cityscapes:latest
     - name: push the Docker image
-      run: docker push username/repo_name:latest
+      run: docker push gawad1/cityscapes:latest
