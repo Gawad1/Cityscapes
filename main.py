@@ -2,12 +2,8 @@ import sys
 import numpy as np
 
 
-
-
-
-
 def main():
-    x=np.ones(1)
+    x=np.ones(5)
     print(x)
     if len(sys.argv) > 1:
         print("Argument passed:", sys.argv[1])
