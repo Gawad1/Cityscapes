@@ -4,6 +4,9 @@ FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 # Set the working directory in the container
 WORKDIR /app
 
+# Install git
+RUN apt-get update && apt-get install -y git
+
 # Copy only the requirements file first
 COPY requirements.txt /app/
 
