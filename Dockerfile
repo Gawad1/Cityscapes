@@ -12,8 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY src/ /app/src/
-COPY ../Cityscapes_project/Cityscapes/app.py /app/
-COPY ../Cityscapes_project/Cityscapes/templates/ /app/templates/
+COPY app.py /app/
+COPY templates/ /app/templates/
 
 # Expose the Flask port
 EXPOSE 5000
