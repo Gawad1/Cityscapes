@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Evaluation</title>
+</head>
+<body>
+    <h1>Cityscapes Model Evaluation</h1>
+    <form method="post" action="/run_model">
+        <button type="submit">Run Model</button>
+    </form>
+    {% if mean_iou %}
+        <h2>Mean IoU: {{ mean_iou }}</h2>
+    {% endif %}
+</body>
+</html>

@@ -11,8 +11,13 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
-COPY . /app
+COPY src/ /app/src/
+COPY ../Cityscapes_project/Cityscapes/app.py /app/
+COPY ../Cityscapes_project/Cityscapes/templates/ /app/templates/
+
+# Expose the Flask port
+EXPOSE 5000
 
 # Run the application
-ENTRYPOINT ["python", "src/main.py"]
+ENTRYPOINT ["python", "app.py"]
 
