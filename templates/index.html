@@ -3,15 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Model Evaluation</title>
+    <title>Mandara Image Segmentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #2E779E;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        footer {
+            background-color: #2E779E;
+            color: white;
+            padding: 5px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            font-size: 14px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 36px; /* Larger title size */
+        }
+        h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #2E779E;
+        }
+        form {
+            margin: 20px;
+            text-align: center;
+        }
+        input[type="file"] {
+            margin-right: 10px;
+        }
+        button {
+            background-color: #2E779E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+        .image-container {
+            flex: 1;
+            margin: 10px;
+            max-width: 48%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .image-container h2 {
+            margin-bottom: 10px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
-    <h1>Cityscapes Model Evaluation</h1>
-    <form method="post" action="/run_model">
-        <button type="submit">Run Model</button>
+    <header>
+        <h1>Mandara Image Segmentation</h1>
+    </header>
+
+    <form action="/upload_image" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Upload Image</button>
     </form>
-    {% if mean_iou %}
-        <h2>Mean IoU: {{ mean_iou }}</h2>
-    {% endif %}
+
+    <div class="container">
+        {% if image_url %}
+        <div class="image-container">
+            <h2>Uploaded Image:</h2>
+            <img src="{{ image_url }}" alt="Uploaded Image">
+        </div>
+        {% endif %}
+
+        {% if mask_url %}
+        <div class="image-container">
+            <h2>Predicted Mask:</h2>
+            <img src="{{ mask_url }}" alt="Predicted Mask">
+        </div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>Contributors:</p>
+        <p>Gawad Ahmed | Nada Hassan | Abdelrahman Elsharkawy</p>
+    </footer>
 </body>
 </html>
