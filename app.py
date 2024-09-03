@@ -14,7 +14,7 @@ def run_model():
     root_dir = request.form.get('root_dir', '/app')
     gtFine = request.form.get('gtFine', 'test_images/gtFine')
     images = request.form.get('images', 'test_images/images')
-    test_csv = request.form.get('test_csv', 'output_csvs/test_data.csv')
+    output_dir = request.form.get('output_dir', '/app/output')
     model_path = request.form.get('model_path', '/app/model.pth')
 
     # Command to run the model script directly
@@ -23,7 +23,7 @@ def run_model():
         '--root_dir', root_dir,
         '--gtFine', gtFine,
         '--images', images,
-        '--test_csv', test_csv,
+        '--output_dir', output_dir,
         '--model_path', model_path
     ]
 

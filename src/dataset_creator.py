@@ -6,12 +6,18 @@ class CityscapesDatasetCreator:
         self.config = config
         self.images_dir = config['dataset_paths']['images']
         self.masks_dir = config['dataset_paths']['gtFine']
-        self.test_csv = config['test_csv']
+        self.output_dir = config['output_dir']
         self.root_dir = config['root_dir']
+
+        # Ensure the output directory exists
+        os.makedirs(self.output_dir, exist_ok=True)
+
+        # Define the path for the CSV file inside the output directory
+        self.test_csv = os.path.join(self.output_dir, 'test_data.csv')
 
     def create_csv(self):
         """
-        Creates a CSV file mapping image paths to mask paths.
+        Creates a CSV file mapping image paths to mask paths inside the output directory.
         """
         # Initialize data dictionary
         data = {'image': [], 'mask': []}
@@ -38,3 +44,4 @@ class CityscapesDatasetCreator:
         # Create DataFrame and save to CSV
         df = pd.DataFrame(data)
         df.to_csv(self.test_csv, index=False)
+        print(f"CSV file created at: {self.test_csv}")

@@ -1,3 +1,4 @@
+from PIL import Image
 import argparse
 import os
 import pandas as pd
@@ -19,10 +20,9 @@ def parse_args():
     parser.add_argument('--root_dir', type=str, required=True, help='Root directory for dataset paths.')
     parser.add_argument('--gtFine', type=str, required=True, help='Relative path to gtFine train directory.')
     parser.add_argument('--images', type=str, required=True, help='Relative path to images train directory.')
-    parser.add_argument('--test_csv', required=True, help='Output CSV file path relative to the root directory.')
+    parser.add_argument('--output_dir', type=str, required=True, help='Directory to save the output prediction masks.')
     parser.add_argument('--model_path', type=str, required=True, help='Path to the model.pth file')
     return parser.parse_args()
-
 
 def main():
     args = parse_args()
@@ -34,20 +34,19 @@ def main():
             'images': os.path.join(args.root_dir, args.images)
         },
         'root_dir': args.root_dir,
-        'test_csv': args.test_csv,
+        'output_dir': args.output_dir,
         'num_classes': 20,
         'input_size': (256, 256)
     }
 
     print(f"Using config: {config}")
 
-    # Create the csv
+    # Create the CSV if it doesn't exist (Optional if you need to create it)
     dataset_creator = CityscapesDatasetCreator(config)
-    dataset_creator.create_csv()
+    dataset_creator.create_csv()  # Comment out if CSV already exists
 
-    test_df=pd.read_csv(config['test_csv'])
-
-    #print(test_df.describe())
+    # Read the dataset CSV
+    test_df = pd.read_csv(os.path.join(config['output_dir'], 'test_data.csv'))  # Adjust if needed
 
     mean = [0.28363052, 0.32439385, 0.28523327]
     std_dev = [0.18928334, 0.19246128, 0.18998726]
@@ -67,7 +66,7 @@ def main():
 
     # Init the model
     model = UNet(in_channels=3, out_channels=config['num_classes'])
-    checkpoint = torch.load(args.model_path,map_location=torch.device('cpu') )
+    checkpoint = torch.load(args.model_path, map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint['model_state_dict'])
 
     # Prepare for evaluation
@@ -80,8 +79,11 @@ def main():
     all_preds = []
     all_labels = []
 
+    if not os.path.exists(config['output_dir']):
+        os.makedirs(config['output_dir'])
+
     with torch.no_grad():
-        for batch in tqdm(dl_test, desc='Evaluating', unit='batch'):
+        for batch_idx, batch in tqdm(enumerate(dl_test), desc='Evaluating', unit='batch'):
             images = batch['image']
             masks = batch['mask']
             images = images.permute(0, 3, 1, 2).to(dtype=torch.float32)
@@ -98,6 +100,14 @@ def main():
             # Collect predictions and labels for IoU calculation
             all_preds.append(predicted.cpu())
             all_labels.append(masks.cpu())
+
+            # Save prediction masks
+            for i, pred in enumerate(predicted):
+                pred_image = pred.cpu().numpy()
+                pred_image_filename = os.path.join(config['output_dir'], f'pred_{batch_idx * 4 + i}.png')
+                # Save each prediction as an image (adjust this depending on your data format)
+                pred_image = (pred_image * 255 / num_classes).astype('uint8')
+                Image.fromarray(pred_image.squeeze(), mode='L').save(pred_image_filename)
 
     # Concatenate all predictions and labels
     all_preds = torch.cat(all_preds)
